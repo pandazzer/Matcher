@@ -56,8 +56,9 @@ public class Main {
 
     }
 
-    private List<String> getList(List<String> array1, List<String> array2){
-        List<String> result = new ArrayList<>();
+    List<String> getList(List<String> array1, List<String> array2){
+        List<String> mappedList = new ArrayList<>();
+        List<String> balance = new ArrayList<>(array2);
         for (String str1 : array1) {
             List<String> wordOne = List.of(str1.split(" "));
             int maxEqualsRate = 0;
@@ -68,10 +69,23 @@ public class Main {
                 if (equalsRate > maxEqualsRate){
                     maxEqualsRate = equalsRate;
                     resWord2 = str2;
+                    balance.remove(str2);
                 }
-                System.out.println(str1 + " " + str2 + " " + equalsRate(wordOne, wordTwo));
             }
-            result.add(str1 + ":" + resWord2 + "\n");
+            mappedList.add(str1 + ":" + resWord2 + "\n");
+        }
+        List<String> result = new ArrayList<>();
+        for (String resultStr : mappedList){
+            if (balance.size() > 0 && resultStr.contains("?")){
+                result.add(resultStr.replace("?", balance.get(0)));
+                balance.remove(0);
+            } else {
+                result.add(resultStr);
+            }
+        }
+        while (balance.size() > 0){
+            result.add(balance.get(0) + ":?");
+            balance.remove(0);
         }
         return result;
     }
